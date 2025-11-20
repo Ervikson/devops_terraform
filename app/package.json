@@ -1,0 +1,15 @@
+{
+  "name": "yc-final-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "lint": "node --check src/server.js"
+  },
+  "dependencies": {
+    "express": "5.0.0",
+    "mysql2": "3.11.3",
+    "dotenv": "16.4.5"
+  }
+}

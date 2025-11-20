@@ -1,0 +1,33 @@
+version: '3.9'
+services:
+  app:
+    build:
+      context: .
+    image: cr.yandex/<cloud-id>/<registry-id>/final-app:latest
+    ports:
+      - '80:3000'
+    environment:
+      PORT: 3000
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: app
+      DB_PASSWORD: changeme
+      DB_NAME: appdb
+      YC_REGION: ru-central1
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: app
+      MYSQL_PASSWORD: changeme
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      retries: 5
+volumes:
+  db_data:
