@@ -11,28 +11,21 @@
 - `docs/architecture.md` – краткое описание архитектуры и потоков.
 
 ## Задание 1. Инфраструктура в Yandex Cloud
-1. Заполните переменные в файле `terraform/terraform.tfvars` (пример ниже):
-   ```hcl
-   yc_token      = "<OAuth token>"
-   cloud_id      = "<cloud id>"
-   folder_id     = "<folder id>"
-   ssh_public_key = "ssh-ed25519 AAAA..."
-   ```
-2. Инициализация и проверка:
+1. Инициализация и проверка:
    ```bash
    cd /home/sergey/Documents/HW_projects/Final-1/terraform
    terraform init
    terraform plan -out plan.tfplan
    terraform apply plan.tfplan
    ```
-3. В результате будут созданы:
+2. В результате будут созданы:
    - `VPC final-vpc` и две подсети `/24`.
    - Группа безопасности с открытыми портами 22/80/443.
    - Registry `final-app-registry`.
    - Управляемый кластер MySQL `final-mysql` с БД `appdb` и пользователем `app`.
    - Секрет LockBox `final-mysql-secret` с паролем пользователя.
    - Одна или несколько ВМ (настраивается `var.vm_count`).
-4. `terraform/outputs.tf` печатает публичные IP ВМ, FQDN БД и ID реестра.
+3. `terraform/outputs.tf` печатает публичные IP ВМ, FQDN БД и ID реестра.
 
 ## Задание 2. Установка Docker и Compose через cloud-init
 - Файл `cloud-init/user-data.yaml` добавлен в метаданные ВМ в `terraform/main.tf`.
