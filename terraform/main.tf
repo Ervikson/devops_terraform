@@ -16,33 +16,25 @@ resource "yandex_vpc_subnet" "subnet" {
 }
 
 resource "yandex_vpc_security_group" "app" {
-  name       = "final-app-sg"
+  name       = var.sg_name
   network_id = yandex_vpc_network.main.id
 
-  ingress {
-    protocol       = "TCP"
-    description    = "SSH"
-    port           = 22
-    v4_cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = var.security_group_ingress
+    content {
+      protocol       = ingress.value.protocol
+      description    = ingress.value.description
+      port           = ingress.value.port
+      v4_cidr_blocks = ingress.value.v4_cidr_blocks
+    }
   }
 
-  ingress {
-    protocol       = "TCP"
-    description    = "HTTP"
-    port           = 80
-    v4_cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    protocol       = "TCP"
-    description    = "HTTPS"
-    port           = 443
-    v4_cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    protocol       = "ANY"
-    v4_cidr_blocks = ["0.0.0.0/0"]
+  dynamic "egress" {
+    for_each = var.security_group_egress
+    content {
+      protocol       = egress.value.protocol
+      v4_cidr_blocks = egress.value.v4_cidr_blocks
+    }
   }
 }
 
@@ -120,15 +112,15 @@ resource "yandex_compute_instance" "app" {
   }
 
   resources {
-    cores         = 2
-    memory        = 4
-    core_fraction = 20
+    cores         = var.vm_resources.cores
+    memory        = var.vm_resources.memory
+    core_fraction = var.vm_resources.core_fraction
   }
 
   boot_disk {
     initialize_params {
       image_id = var.vm_image_id
-      size     = 20
+      size     = var.vm_boot_disk_size
     }
   }
 
