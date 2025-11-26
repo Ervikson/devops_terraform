@@ -137,10 +137,13 @@ resource "yandex_compute_instance" "app" {
 }
 
 data "template_file" "cloudinit" {
-  template = file("${path.module}/../cloud-init/user-data.yaml")
+  template = file("${path.module}/../cloud-init/user-data.yaml.tpl")
 
   vars = {
     username       = var.username
     ssh_public_key = file(var.ssh_public_key)
+    registry_id    = yandex_container_registry.app.id
+    db_host        = yandex_mdb_mysql_cluster.main.host[0].fqdn
+    db_password    = random_password.mysql.result
   }
 }
